@@ -7,10 +7,19 @@ package cz.vsb.gis.ruz76.collada;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.LineNumberReader;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  *
@@ -57,6 +66,72 @@ public class Teren {
         footer += "end_<structure_group>\n";
         footer += "end_<terrain>\n";
         return footer;
+    }
+
+    public long getLinesCunt(String fileName) throws Exception {
+        try (LineNumberReader lnr = new LineNumberReader(new FileReader(new File(fileName)))) {
+            while (lnr.skip(Long.MAX_VALUE) > 0) {
+            };
+            return lnr.getLineNumber();
+        }
+    }
+
+    public void makeRegular(String fileName) throws Exception {
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(fileName.split("\\.")[0] + "_reg.txt"));
+            String line;
+            System.out.println("header");
+            int i;
+            for (i = 0; i < 6; i++) {
+                line = br.readLine();
+                bw.write(line + "\n");
+                System.out.println(line);
+            }
+            System.out.println("body");
+            int row = 0;
+            int cellsize = 10;
+            while ((line = br.readLine()) != null) {
+
+                String items[] = line.split(" ");
+                int novaluecount = 0;
+                String lastval = "";
+                for (int col = 0; col < items.length; col++) {
+                    if (items[col].equalsIgnoreCase("-9999")) {
+                        novaluecount++;
+                    } else {
+                        double h = Double.parseDouble(items[col].replaceAll(",", "."));
+                        for (int j = 0; j < novaluecount; j++) {
+                            if (col == (items.length - 1)) {
+                                bw.write(items[col]);
+                            } else {
+                                bw.write(items[col] + " ");
+                            }
+                        }
+                        novaluecount = 0;
+                        if (col == (items.length - 1)) {
+                            bw.write(items[col]);
+                        } else {
+                            bw.write(items[col] + " ");
+                        }
+                        lastval = items[col];
+                    }
+                }
+                for (int j = 0; j < novaluecount; j++) {
+                    if (j == (novaluecount - 1)) {
+                        bw.write(lastval);
+                    } else {
+                        bw.write(lastval + " ");
+                    }
+                }
+                bw.write("\n");
+            }
+            System.out.println("end of body");
+            System.out.println("Terrain regulared successfully");
+            bw.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void reduceTer(String fileName) {
@@ -147,10 +222,10 @@ public class Teren {
                     //}
                 }
                 /*if (row == 0) {
-                    rows.add(row, cols);
-                } else {
-                    rows.add(row - 1, cols);
-                }*/
+                 rows.add(row, cols);
+                 } else {
+                 rows.add(row - 1, cols);
+                 }*/
                 rows.add(cols);
                 row++;
             }
@@ -166,9 +241,15 @@ public class Teren {
                     double h2 = (double) cols.get(col + 1);
                     double h3 = (double) cols2.get(col);
                     double h4 = (double) cols2.get(col + 1);
-                    if (h2 == -9999) h2 = h1;
-                    if (h3 == -9999) h3 = h1;
-                    if (h4 == -9999) h4 = h1;
+                    if (h2 == -9999) {
+                        h2 = h1;
+                    }
+                    if (h3 == -9999) {
+                        h3 = h1;
+                    }
+                    if (h4 == -9999) {
+                        h4 = h1;
+                    }
                     if (h1 != -9999) {
                         String pixel = getPixel(5 + col * cellsize, 1045 - row * cellsize, cellsize, h1, h2, h3, h4);
                         bw.write(pixel);
@@ -201,7 +282,7 @@ public class Teren {
         pixel += "nVertices 3\n";
         pixel += pomx + " " + pomy + " " + h4 + "\n";
         pixel += x + " " + pomy + " " + h3 + "\n";
-        pixel += pomx + " " + y + " " + h2 + "\n";       
+        pixel += pomx + " " + y + " " + h2 + "\n";
         pixel += "end_<face>\n";
         return pixel;
     }
