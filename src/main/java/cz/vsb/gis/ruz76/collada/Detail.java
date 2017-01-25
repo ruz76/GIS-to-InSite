@@ -23,19 +23,15 @@ public class Detail {
         System.out.println("Input polygon:");
         System.out.println(poly);
 
-        AffineTransformation af = new AffineTransformation();
-        af = af.rotate(0.1);
+
         //poly = gf.createPolygon(af.transform((Geometry) poly).getCoordinates());
 
-        poly =  (Polygon) af.transform((Geometry) poly);
-        System.out.println("Po transformaci polygon:");
-        System.out.println(poly);
 
         Coordinate[] coords = poly.getBoundary().getCoordinates();
         double size = 0;
         int position = 0;
         for (int j = 0; j < coords.length - 1; j++) {
-            System.out.println(coords[j]);
+            //System.out.println(coords[j]);
             double cursize = coords[j].distance(coords[j+1]);
             if (size < cursize) {
                 size = cursize;
@@ -45,18 +41,35 @@ public class Detail {
         System.out.println(size);
         System.out.println(position);
 
+        //double angle = Math.atan(coords[position+1].x - coords[position].x / coords[position+1].y - coords[position].y);
+        double dy = Math.abs(coords[position+1].y - coords[position].y);
+        double dx = Math.abs(coords[position+1].x - coords[position].x);
+        System.out.println("dx: " + dx);
+        System.out.println("dy: " + dy);
+
+        double angle = Math.atan( dy / dx);
+        AffineTransformation af = new AffineTransformation();
+        af = af.rotate(-angle, coords[position].x, coords[position].y);
+
+        System.out.println("Uhel: " + angle);
+
+        poly =  (Polygon) af.transform((Geometry) poly);
+        System.out.println("Po transformaci polygon:");
+        System.out.println(poly);
+
         double stepx = (coords[position+1].x - coords[position].x) / 10;
         double stepy = (coords[position+1].y - coords[position].y) / 5;
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 5; j++) {
-                System.out.println(coords[position].x + (stepx * i));
-                System.out.println(coords[position].y + (stepy * j));
+                double cx = coords[position].x + (stepx * i);
+                double cy = coords[position].y + (stepy * j);
+                System.out.println("POINT(" + cx + " "  + cy + ")");
             }
         }
     }
     public static void main(String[] args) throws Exception {
         Detail d = new Detail();
-        d.convert("MULTIPOLYGON(((10 10, 30 10, 30 30, 10 30, 10 10)))");
+        d.convert("MULTIPOLYGON (((10 10, 30 20, 25 30, 5 20, 10 10)))");
     }
 }
 
