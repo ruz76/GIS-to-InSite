@@ -195,15 +195,18 @@ public class Teren {
         }
     }
 
-    public void convertToTer(String fileName) {
+    public void convertToTer(String fileName, String landuse) {
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            BufferedReader brlanduse = new BufferedReader(new FileReader(landuse));
             BufferedWriter bw = new BufferedWriter(new FileWriter(fileName.split("\\.")[0] + ".ter"));
             bw.write(getHeader());
             String line;
+            String linelanduse;
             System.out.println("header");
             int i;
             for (i = 0; i < 6; i++) {
                 line = br.readLine();
+                linelanduse = brlanduse.readLine();
                 System.out.println(line);
 
             }
@@ -211,14 +214,21 @@ public class Teren {
             int row = 0;
             int cellsize = 10;
             ArrayList rows = new ArrayList();
+            ArrayList rowslanduse = new ArrayList();
             while ((line = br.readLine()) != null) {
                 //System.out.println(line);
+                linelanduse = brlanduse.readLine();
                 ArrayList cols = new ArrayList();
+                ArrayList colslanduse = new ArrayList();
                 String items[] = line.split(" ");
+                String itemslanduse[] = linelanduse.split(" ");
                 for (int col = 0; col < items.length; col++) {
                     //if (!items[col].equalsIgnoreCase("-9999")) {
                     double h = Double.parseDouble(items[col].replaceAll(",", "."));
+                    int landusevalue = 0;
+                    if (!itemslanduse[col].equalsIgnoreCase("")) landusevalue = Integer.parseInt(itemslanduse[col]);
                     cols.add(h);
+                    colslanduse.add(landusevalue);
                     //}
                 }
                 /*if (row == 0) {
@@ -227,11 +237,13 @@ public class Teren {
                  rows.add(row - 1, cols);
                  }*/
                 rows.add(cols);
+                rowslanduse.add(colslanduse);
                 row++;
             }
 
             for (row = 0; row < rows.size() - 1; row++) {
                 ArrayList cols = (ArrayList) rows.get(row);
+                ArrayList colslanduse = (ArrayList) rowslanduse.get(row);
                 ArrayList cols2 = (ArrayList) rows.get(row + 1);
                 for (int col = 0; col < cols.size() - 1; col++) {
                     if (col == 17) {
@@ -251,7 +263,8 @@ public class Teren {
                         h4 = h1;
                     }
                     if (h1 != -9999) {
-                        String pixel = getPixel(5 + col * cellsize, 1045 - row * cellsize, cellsize, h1, h2, h3, h4);
+                        int landusevalue = (int) colslanduse.get(col);
+                        String pixel = getPixel(5 + col * cellsize, 1045 - row * cellsize, cellsize, h1, h2, h3, h4, landusevalue);
                         bw.write(pixel);
                     }
                 }
@@ -267,9 +280,9 @@ public class Teren {
         }
     }
 
-    private String getPixel(double x, double y, int cellsize, double h1, double h2, double h3, double h4) {
+    private String getPixel(double x, double y, int cellsize, double h1, double h2, double h3, double h4, int landusevalue) {
         String pixel = "begin_<face>\n";
-        pixel += "Material 0\n";
+        pixel += "Material " + getMaterialId(landusevalue) + "\n";
         pixel += "nVertices 3\n";
         pixel += x + " " + y + " " + h1 + "\n";
         double pomx = x + cellsize;
@@ -278,12 +291,17 @@ public class Teren {
         pixel += x + " " + pomy + " " + h3 + "\n";
         pixel += "end_<face>\n";
         pixel += "begin_<face>\n";
-        pixel += "Material 0\n";
+        pixel += "Material " + getMaterialId(landusevalue) + "\n";
         pixel += "nVertices 3\n";
         pixel += pomx + " " + pomy + " " + h4 + "\n";
         pixel += x + " " + pomy + " " + h3 + "\n";
         pixel += pomx + " " + y + " " + h2 + "\n";
         pixel += "end_<face>\n";
         return pixel;
+    }
+
+    private int getMaterialId(int landusevalue) {
+        //TODO assign materials to landuse
+        return landusevalue;
     }
 }

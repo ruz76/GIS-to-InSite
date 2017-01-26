@@ -24,8 +24,8 @@ public class Main {
         try {
             //t.reduceTer("teren_budovy_v2.txt");
             //main.convertLayer();
-            //t.convertToTer("teren_v2_10.txt");
-            p.saveToSetup("KampusGenerovano");
+            t.convertToTer("teren_v2_10_reg.txt", "vyuziti_5_clip_10.txt");
+            //p.saveToSetup("KampusGenerovano");
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
