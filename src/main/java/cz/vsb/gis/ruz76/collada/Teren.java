@@ -37,23 +37,14 @@ public class Teren {
         header += "visible no\n";
         header += "terrain\n";
         header += "end_<reference>\n";
-        header += "begin_<Material> Wet earth\n";
-        header += "Material 0\n";
-        header += "DielectricHalfspace\n";
-        header += "begin_<Color>\n";
-        header += "ambient 0.350000 0.600000 0.350000 1.000000\n";
-        header += "diffuse 0.350000 0.600000 0.350000 1.000000\n";
-        header += "specular 0.350000 0.600000 0.350000 1.000000\n";
-        header += "emission 0.000000 0.000000 0.000000 0.000000\n";
-        header += "shininess 5.000000\n";
-        header += "end_<Color>\n";
-        header += "begin_<DielectricLayer> Wet earth\n";
-        header += "conductivity 2.000e-002\n";
-        header += "permittivity 25.000000\n";
-        header += "roughness 0.000e+000\n";
-        header += "thickness 0.000e+000\n";
-        header += "end_<DielectricLayer>\n";
-        header += "end_<Material>\n";
+        try (BufferedReader br = new BufferedReader(new FileReader("materials.def"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                header += line + "\n";
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         header += "begin_<structure_group>\n";
         header += "begin_<structure>\n";
         header += "begin_<sub_structure>\n";
@@ -68,7 +59,7 @@ public class Teren {
         return footer;
     }
 
-    public long getLinesCunt(String fileName) throws Exception {
+    public long getLinesCount(String fileName) throws Exception {
         try (LineNumberReader lnr = new LineNumberReader(new FileReader(new File(fileName)))) {
             while (lnr.skip(Long.MAX_VALUE) > 0) {
             };
@@ -302,6 +293,75 @@ public class Teren {
 
     private int getMaterialId(int landusevalue) {
         //TODO assign materials to landuse
-        return landusevalue;
+        /**
+         * 0 neurèeno (pravdìpodobnì zatravnìná plocha)
+         1 komunikace - silnice
+         2 komunikace - cyklostetska/chodník
+         3 komunikace - chodník, pìší komunikace (èi plocha)
+         4 komunikace - tranvajové drážní tìleso
+         5 komunikace - parkovištì
+         6 sportovištì - minifolf
+         7 sportovištì - hrací plocha (asfalt?)
+         8 sportovištì - tenisová hrací plocha (antuka)
+         9 sportovištì - fotbalová hrací plocha (umìlý trávník)
+         10 sportovištì - skvoš?
+         11 les
+         12 stromy mimo les
+         13 keøe mimo les
+         14 lampy
+         15 budovy
+         */
+        int material = 8;
+        switch (landusevalue){
+            case 0:
+                material = 8; //Wet earth
+                break;
+            case 1:
+                material = 2; //Alsfalth
+                break;
+            case 2:
+                material = 2; //Alsfalth
+                break;
+            case 3:
+                material = 3; //Concrete
+                break;
+            case 4:
+                material = 0; //Metal
+                break;
+            case 5:
+                material = 2; //Alsfalth
+                break;
+            case 6:
+                material = 2; //Alsfalth
+                break;
+            case 7:
+                material = 2; //Alsfalth
+                break;
+            case 8:
+                material = 3; //Brick - antuka je vlastně rozemletá cihla
+                break;
+            case 9:
+                material = 7; //ITU Floorboard 2.4 GHz - tady jsem netušil
+                break;
+            case 10:
+                material = 7; //ITU Floorboard 2.4 GHz - tady jsem netušil
+                break;
+            case 11:
+                material = 6; //Wood
+                break;
+            case 12:
+                material = 6; //Wood
+                break;
+            case 13:
+                material = 6; //Wood
+                break;
+            case 14:
+                material = 0; //Metal
+                break;
+            case 15:
+                material = 3; //Concrete
+                break;
+        }
+        return material;
     }
 }
