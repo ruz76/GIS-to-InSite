@@ -21,11 +21,13 @@ public class Main {
         Main main = new Main();
         cz.vsb.gis.ruz76.collada.Teren t = new Teren();
         Project p = new Project();
+        Prototype prototype = new Prototype();
         try {
             //t.reduceTer("teren_budovy_v2.txt");
             //main.convertLayer();
-            t.convertToTer("teren_v2_10_reg.txt", "vyuziti_5_clip_10.txt");
+            //t.convertToTer("teren_v2_10_reg.txt", "vyuziti_5_clip_10.txt");
             //p.saveToSetup("KampusGenerovano");
+            prototype.convert();
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
