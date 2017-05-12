@@ -1,0 +1,87 @@
+Format type:keyword version: 1.1.0
+begin_<object> Bufet_59
+begin_<reference> 
+cartesian
+longitude 18.156399261002701
+latitude 49.829460088096702
+visible yes
+sealevel
+end_<reference>
+begin_<Material> Metal
+Material 0
+PEC
+thickness 0.000e+000
+begin_<Color> 
+ambient 0.600000 0.600000 0.600000 1.000000
+diffuse 0.600000 0.600000 0.600000 1.000000
+specular 0.600000 0.600000 0.600000 1.000000
+emission 0.000000 0.000000 0.000000 0.000000
+shininess 75.000000
+end_<Color>
+roughness 0.000e+000
+end_<Material>
+begin_<structure_group> 
+begin_<structure> 
+begin_<sub_structure> 
+begin_<face> 
+Material 0
+nVertices 4
+150 820 266
+160 820 266
+160 830 266
+150 830 266
+end_<face>
+begin_<face> 
+Material 0
+nVertices 4
+150 820 276
+160 820 276
+160 830 276
+150 830 276
+end_<face>
+begin_<face> 
+Material 0
+nVertices 4
+150 820 266
+160 820 266
+160 820 276
+150 820 276
+end_<face>
+begin_<face> 
+Material 0
+nVertices 4
+150 830 266
+160 830 266
+160 830 276
+150 830 276
+end_<face>
+begin_<face> 
+Material 0
+nVertices 4
+150 830 266
+150 820 266
+150 820 276
+150 830 276
+end_<face>
+begin_<face> 
+Material 0
+nVertices 4
+160 830 266
+160 820 266
+160 820 276
+160 830 276
+end_<face>
+end_<sub_structure>
+end_<structure>
+end_<structure_group>
+begin_<ControlVectors> 
+CVsVisible no
+Stippled no
+CVsThickness 3
+CVxLength 10.0000000000
+CVyLength 10.0000000000
+CVzLength 10.0000000000
+CVsXaxis 1.0000000000 0.0000000000 0.0000000000
+CVsZaxis 0.0000000000 0.0000000000 1.0000000000
+end_<ControlVectors>
+end_<object>
