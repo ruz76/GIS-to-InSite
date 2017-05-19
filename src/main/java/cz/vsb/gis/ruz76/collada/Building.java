@@ -12,6 +12,7 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.WKTReader;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -72,6 +73,48 @@ public class Building {
         content = content.replaceAll("#d4", triangles);
         Path pathsave = Paths.get("output/" + filename + ".dae");
         Files.write(pathsave, content.getBytes(charset));
+    }
+
+    String getFace(Polygon poly, double z) {
+        if (poly.getNumGeometries() > 1) {
+            throw new IllegalArgumentException("Can't deal with holes yet");
+        }
+        Coordinate[] coords = poly.getBoundary().getCoordinates();
+        String face = "";
+        face+= "begin_<face>\n";
+        face+= "Material 0\n";
+        int count = coords.length - 1;
+        face+= "nVertices " + count + "\n";
+        for (int i = 0; i < coords.length - 1; i++) {
+            face+= coords[i].x + " " + coords[i].y +  " " +  z + "\n";
+        }
+        face+= "end_<face>\n";
+        return face;
+    }
+
+    void  convertRoofandFloor(String polygonWKT, String hfloor, String h, PrintStream ps) throws Exception {
+        WKTReader reader = new WKTReader(gf);
+        MultiPolygon mpoly = (MultiPolygon) reader.read(polygonWKT);
+        Polygon poly = null;
+        if (mpoly.getGeometryN(0).getGeometryType().equalsIgnoreCase("MULTIPOLYGON")) {
+            MultiPolygon mpoly2 = (MultiPolygon) mpoly.getGeometryN(0);
+            poly = (Polygon) mpoly2.getGeometryN(0);
+        } else {
+            poly = (Polygon) mpoly.getGeometryN(0);
+        }
+        System.out.println("Input polygon:");
+        System.out.println(poly);
+        //Triangulator t = new Triangulator();
+        //Geometry ears = t.triangulate(poly);
+        //for (int i = 0; i < ears.getNumGeometries(); i++) {
+        //    Polygon triangle = (Polygon) ears.getGeometryN(i);
+        //    triangle.normalize();
+        //    triangle = (Polygon) triangle.reverse();
+            double hfloor_double = Double.parseDouble(hfloor);
+            ps.print(getFace(poly, hfloor_double));
+            double h_double = Double.parseDouble(h);
+            ps.print(getFace(poly, hfloor_double + h_double));
+        //}
     }
 
     void convert(String polygonWKT, String hfloor, String h, String filename) throws Exception {

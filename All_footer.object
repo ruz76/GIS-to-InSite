@@ -1,0 +1,14 @@
+end_<sub_structure>
+end_<structure>
+end_<structure_group>
+begin_<ControlVectors> 
+CVsVisible no
+Stippled no
+CVsThickness 3
+CVxLength 10.0000000000
+CVyLength 10.0000000000
+CVzLength 10.0000000000
+CVsXaxis 1.0000000000 0.0000000000 0.0000000000
+CVsZaxis 0.0000000000 0.0000000000 1.0000000000
+end_<ControlVectors>
+end_<object>
