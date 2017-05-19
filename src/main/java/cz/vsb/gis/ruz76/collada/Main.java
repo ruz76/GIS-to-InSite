@@ -32,6 +32,7 @@ public class Main {
             //prototype.convert();
             main.convertLayerPartFloorRoof();
             main.convertLayerPartWalls();
+            main.convertLayerPartWallsTest();
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
@@ -97,6 +98,30 @@ public class Main {
                 double hodsazeni = Double.parseDouble(items[13]);
                 double h = Double.parseDouble(items[12]);
                 wall.convertWall(items[0].replace("\"", ""), items[2], hfloor + hodsazeni, h);
+            } catch (Exception ex) {
+                System.out.println(ex.getMessage());
+            }
+
+        }
+
+    }
+
+    void convertLayerPartWallsTest() throws Exception {
+        String csvFile = "budovy_vsb_all_lines.csv";
+        BufferedReader br = null;
+        String line = "";
+        String cvsSplitBy = ";";
+        PrintStream ps = new PrintStream(new FileOutputStream("part2.csv"));
+        Wall wall = new Wall(ps);
+
+        br = new BufferedReader(new FileReader(csvFile));
+        while ((line = br.readLine()) != null) {
+            String[] items = line.split(cvsSplitBy);
+            try {
+                double hfloor = Double.parseDouble(items[11]);
+                double hodsazeni = Double.parseDouble(items[13]);
+                double h = Double.parseDouble(items[12]);
+                wall.convertWallTest(items[0].replace("\"", ""), items[2], hfloor + hodsazeni, h, items[1]);
             } catch (Exception ex) {
                 System.out.println(ex.getMessage());
             }

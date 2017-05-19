@@ -62,4 +62,42 @@ public class Wall {
                 break;
         }
     }
+
+    void printWallTest(double w, double h, String gid, String polylineWKT) {
+
+
+        ps.println(c.x + " " + c.y + " " + c.z + " " + gid + " " + polylineWKT);
+        pm.move(c, w);
+        ps.println(c.x + " " + c.y + " " + c.z + " " + gid + " " + polylineWKT);
+        c.z = c.z + h;
+        ps.println(c.x + " " + c.y + " " + c.z + " " + gid + " " + polylineWKT);
+        pm.move(c, -w);
+        ps.println(c.x + " " + c.y + " " + c.z + " " + gid + " " + polylineWKT);
+
+        pm.move(c, w);
+        c.z = c.z - h;
+    }
+
+    void convertPartSimpleTest(String polylineWKT, double hfloor, double h, String gid) throws ParseException {
+        MultiLineString mpoly = (MultiLineString) reader.read(polylineWKT);
+        Coordinate cords[] =  mpoly.getCoordinates();
+        if (cords[0].x > 204 && cords[0].x < 205) {
+            System.out.println("Fuj");
+        }
+        pm = new PointMover(cords[0], cords[cords.length-1]);
+        c = (Coordinate) cords[cords.length-1].clone();
+        c.z = hfloor;
+        printWallTest(cords[0].distance(cords[cords.length-1]), h, gid, polylineWKT);
+    }
+
+    void convertWallTest(String polylineWKT, String pattern, double hfloor, double h, String gid) throws ParseException {
+        switch (pattern) {
+            case "":
+                convertPartSimpleTest(polylineWKT, hfloor, h, gid);
+                break;
+            default:
+                convertPartSimpleTest(polylineWKT, hfloor, h, gid);
+                break;
+        }
+    }
 }

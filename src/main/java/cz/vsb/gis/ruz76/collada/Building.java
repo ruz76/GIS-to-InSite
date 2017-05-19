@@ -104,6 +104,8 @@ public class Building {
         }
         System.out.println("Input polygon:");
         System.out.println(poly);
+        poly.normalize();
+        poly = (Polygon) poly.reverse();
         //Triangulator t = new Triangulator();
         //Geometry ears = t.triangulate(poly);
         //for (int i = 0; i < ears.getNumGeometries(); i++) {

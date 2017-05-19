@@ -15,19 +15,19 @@ public class PointMover {
         this.c1 = c1;
         this.c2 = c2;
         angle = Math.atan(Math.abs(c2.y - c1.y) / Math.abs(c2.x - c1.x));
-        if (c2.x >= c1.x && c2.y >= c1.y) {
+        if (c1.x >= c2.x && c1.y >= c2.y) {
             directionX = 1;
             directionY = 1;
         }
-        if (c2.x >= c1.x && c2.y < c1.y) {
+        if (c1.x >= c2.x && c1.y < c2.y) {
             directionX = 1;
             directionY = -1;
         }
-        if (c2.x < c1.x && c2.y >= c1.y) {
+        if (c1.x < c2.x && c1.y >= c2.y) {
             directionX = -1;
             directionY = 1;
         }
-        if (c2.x < c1.x && c2.y < c1.y) {
+        if (c1.x < c2.x && c1.y < c2.y) {
             directionX = -1;
             directionY = -1;
         }
