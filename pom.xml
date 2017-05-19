@@ -30,7 +30,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>cz.vsb.gis.ruz76.Main</mainClass>
+                            <mainClass>cz.vsb.gis.ruz76.collada.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -46,7 +46,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>cz.vsb.gis.ruz76.Main</mainClass>
+                            <mainClass>cz.vsb.gis.ruz76.collada.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
