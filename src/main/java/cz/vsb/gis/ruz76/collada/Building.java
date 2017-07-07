@@ -82,7 +82,7 @@ public class Building {
         Coordinate[] coords = poly.getBoundary().getCoordinates();
         String face = "";
         face+= "begin_<face>\n";
-        face+= "Material 0\n";
+        face+= "Material 2\n";
         int count = coords.length - 1;
         face+= "nVertices " + count + "\n";
         for (int i = 0; i < coords.length - 1; i++) {

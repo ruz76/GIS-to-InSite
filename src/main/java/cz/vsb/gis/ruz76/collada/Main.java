@@ -5,10 +5,9 @@
  */
 package cz.vsb.gis.ruz76.collada;
 
-import java.io.BufferedReader;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.PrintStream;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  *
@@ -31,10 +30,13 @@ public class Main {
             //p.saveToSetup("KampusGenerovano");
             //prototype.convert();
             main.convertLayerPartFloorRoof();
-            main.convertLayerPartWalls();
-            main.convertLayerPartWallsTest();
+            for (int i=100; i>0; i--) {
+                main.convertLayerPartWalls(i);
+                main.joinParts(i);
+            }
+            //main.convertLayerPartWallsTest();
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+            ex.printStackTrace();
         }
 
     }
@@ -53,7 +55,7 @@ public class Main {
                 b.convert(country[0], country[3], country[4], country[1] + "_" + country[2]);
                 //break;
             } catch (Exception ex) {
-                System.out.println(ex.getMessage());
+                ex.printStackTrace();
             }
 
         }
@@ -75,7 +77,7 @@ public class Main {
                 b.convertRoofandFloor(items[0], items[3], items[4], ps);
                 //break;
             } catch (Exception ex) {
-                System.out.println(ex.getMessage());
+                ex.printStackTrace();
             }
 
         }
@@ -91,22 +93,67 @@ public class Main {
         Wall wall = new Wall(ps);
 
         br = new BufferedReader(new FileReader(csvFile));
+        line = br.readLine(); //Skip header
         while ((line = br.readLine()) != null) {
             String[] items = line.split(cvsSplitBy);
             try {
                 double hfloor = Double.parseDouble(items[11]);
                 double hodsazeni = Double.parseDouble(items[13]);
                 double h = Double.parseDouble(items[12]);
-                wall.convertWall(items[0].replace("\"", ""), items[2], hfloor + hodsazeni, h);
+                //Budovy bez výšky nexportujeme
+                if (h > 0) {
+                    wall.convertWall(items[0].replace("\"", ""), items[2], hfloor + hodsazeni, h);
+                }
             } catch (Exception ex) {
-                System.out.println(ex.getMessage());
+                ex.printStackTrace();
             }
 
         }
 
     }
 
-    void convertLayerPartWallsTest() throws Exception {
+    void convertLayerPartWalls(int percent) throws Exception {
+        String csvFile = "budovy_vsb_all_lines.csv";
+        BufferedReader br = null;
+        String line = "";
+        String cvsSplitBy = ";";
+        PrintStream ps = new PrintStream(new FileOutputStream("All.object.part2"));
+        Wall wall = new Wall(ps);
+
+        br = new BufferedReader(new FileReader(csvFile));
+        line = br.readLine(); //Skip header
+        while ((line = br.readLine()) != null) {
+            String[] items = line.split(cvsSplitBy);
+            try {
+                double hfloor = Double.parseDouble(items[11]);
+                double hodsazeni = Double.parseDouble(items[13]);
+                double h = Double.parseDouble(items[12]);
+                //Budovy bez výšky nexportujeme
+                if (h > 0) {
+                    wall.convertWallRandom(items[0].replace("\"", ""), items[4], hfloor + hodsazeni, h, percent);
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+        }
+
+    }
+
+    void joinParts(int percent) throws Exception {
+        PrintStream ps = new PrintStream(new FileOutputStream("/home/jencek/Documents/Projekty/InSite/varianty/Random/" + percent + "/All.object"));
+        String filecontent = new String(Files.readAllBytes(Paths.get("All_header.object")));
+        ps.print(filecontent);
+        filecontent = new String(Files.readAllBytes(Paths.get("All.object.part")));
+        ps.print(filecontent);
+        filecontent = new String(Files.readAllBytes(Paths.get("All.object.part2")));
+        ps.print(filecontent);
+        filecontent = new String(Files.readAllBytes(Paths.get("All_footer.object")));
+        ps.print(filecontent);
+        ps.close();
+    }
+
+    /*void convertLayerPartWallsTest() throws Exception {
         String csvFile = "budovy_vsb_all_lines.csv";
         BufferedReader br = null;
         String line = "";
@@ -128,7 +175,7 @@ public class Main {
 
         }
 
-    }
+    }*/
 
 }
 
